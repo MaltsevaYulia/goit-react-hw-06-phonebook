@@ -4,11 +4,17 @@ import css from './ContactList.module.css';
 import { useSelector } from 'react-redux';
 
 export const ContactList = () => {
-    const contacts = useSelector(state => state.contacts);
-    console.log("🚀 ~ ContactList ~ contacts:", contacts)
+  const contacts = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.contacts.filter);
+
+  const normalizedFilter = filter.toLocaleLowerCase();
+  const visibleContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter)
+  );
+  
   return (
     <ul>
-      {contacts.map(({ name, number, id }) => {
+      {visibleContacts.map(({ name, number, id }) => {
         return (
           <li className={css['contact_item']} key={id}>
             <ContactItem name={name} number={number} id={id} />

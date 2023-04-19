@@ -1,9 +1,11 @@
-import { createSlice,nanoid } from '@reduxjs/toolkit';
+import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
-const initialState =  [
-    { name: 'mary Simpson', number: '423-45-89', id: 'SsVmrMfu5XMrNgxIPTdiq' },
-    { name: 'Rosie Simpson', number: '423-45-89', id: 'j1_tgqVVUOF2UqkF83wCV' },
-  ]
+const initialState = {
+  contacts: [],
+  filter: '',
+};
 
 export const contactsSlice = createSlice({
   name: 'contacts',
@@ -11,34 +13,41 @@ export const contactsSlice = createSlice({
   reducers: {
     addContact: {
       reducer(state, action) {
-        state.push(action.payload);
+        state.contacts.push(action.payload);
       },
-      prepare(name,number) {
+      prepare(name, number) {
         return {
           payload: {
             name,
             number,
             id: nanoid(),
-            
           },
         };
       },
     },
     deleteContact(state, action) {
-      const index = state.findIndex(task => task.id === action.payload);
-      state.splice(index, 1);
+      const index = state.contacts.findIndex(
+        task => task.id === action.payload
+      );
+      state.contacts.splice(index, 1);
     },
-    // toggleCompleted(state, action) {
-    //   for (const task of state) {
-    //     if (task.id === action.payload) {
-    //       task.completed = !task.completed;
-    //       break;
-    //     }
-    //   }
-    // },
+
+    filterContacts(state, action) {
+      state.filter = action.payload;
+    },
   },
 });
 
-export const { addContact, deleteContact } = contactsSlice.actions;
-// console.log('🚀 ~ contactsSlise:', contactsSlice);
-// console.log('🚀 ~ add:', addContact);
+export const { addContact, deleteContact, filterContacts } =
+  contactsSlice.actions;
+
+const persistConfig = {
+  key: 'contacts',
+  storage,
+  whitelist: ['contacts'],
+};
+
+export const contactReducer = persistReducer(
+  persistConfig,
+  contactsSlice.reducer
+);

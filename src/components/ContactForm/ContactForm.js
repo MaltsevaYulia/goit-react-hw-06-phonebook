@@ -2,18 +2,16 @@ import { useState } from 'react';
 import css from './ContactForm.module.css';
 // import PropTypes from 'prop-types';
 
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/contactsSlice';
-
-// console.log('🚀 ~ add:', addContact);
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const dispatch = useDispatch();
-  const contacts = useSelector(state=>state.contacts)
-  // console.log("🚀 ~ ContactForm ~ contacts:", contacts)
+  const contacts = useSelector(state => state.contacts.contacts);
+  console.log('🚀 ~ ContactForm ~ contacts:', contacts);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -31,16 +29,12 @@ export const ContactForm = () => {
 
   const handleSabmit = e => {
     e.preventDefault();
-    if (
-      contacts.lenth &&contacts.find(
-        el => el.name.toLowerCase() === name.toLowerCase()
-      )
-    ) {
+
+    if (contacts.find(el => el.name.toLowerCase() === name.toLowerCase())) {
       alert(`${name} is already in contacts`);
       return;
     }
-    dispatch(addContact( name, number));
-    // addContact({ name, number });
+    dispatch(addContact(name, number));
     setName('');
     setNumber('');
   };
@@ -73,7 +67,6 @@ export const ContactForm = () => {
     </form>
   );
 };
-
 
 // ContactForm.protoType = {
 //   addContact: PropTypes.func.isRequired,
