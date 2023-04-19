@@ -11,7 +11,6 @@ export const ContactForm = () => {
 
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts.contacts);
-  console.log('🚀 ~ ContactForm ~ contacts:', contacts);
 
   const handleChange = e => {
     const { name, value } = e.target;
